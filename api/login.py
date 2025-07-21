@@ -9,19 +9,28 @@ class handler(BaseHTTPRequestHandler):
         
         try:
             data = json.loads(post_data)
-            username = data.get('username', '')
-            password = data.get('password', '')
+            username = data.get('username', '').strip()
+            password = data.get('password', '').strip()
             
-            # Validasi hardcoded
+            # Strict validation (case-sensitive, no whitespace)
             if username == 'amettha' and password == 'mart123':
-                response = {'message': 'Login berhasil!'}
+                response = {
+                    "success": True,
+                    "message": "Login berhasil! Mengarahkan ke dashboard..."
+                }
                 self.send_response(200)
             else:
-                response = {'error': 'Username atau password salah'}
+                response = {
+                    "success": False,
+                    "error": "Username atau password salah!"
+                }
                 self.send_response(401)
                 
         except json.JSONDecodeError:
-            response = {'error': 'Format data tidak valid'}
+            response = {
+                "success": False,
+                "error": "Format data tidak valid!"
+            }
             self.send_response(400)
         
         self.send_header('Content-type', 'application/json')
